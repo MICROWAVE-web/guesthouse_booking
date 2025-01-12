@@ -23,7 +23,7 @@ class AmenityViewSet(viewsets.ModelViewSet):
 
 
 class RoomViewSet(viewsets.ModelViewSet):
-    queryset = Room.objects.all()
+    queryset = Room.objects.all().order_by('price_per_night')  # Упорядочим по цене за ночь
     serializer_class = RoomSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RoomFilter

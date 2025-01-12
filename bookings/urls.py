@@ -44,3 +44,7 @@ router.register(r'reviews', ReviewViewSet, basename='review')
 urlpatterns += [
     path('api/', include(router.urls)),  # <-- Оборачиваем роутер в /api/
 ]
+
+# Для обслуживангия MEDIA файлов
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,8 @@
-/* static/css/styles.css */
+
 body {
     font-family: Arial, sans-serif;
-    background-image: url("../images/Фон страници.webp");
+    background-image: url("/media/images/background.webp");
+    backdrop-filter: brightness(110%) saturate(150%) blur(20px) contrast(80%);
     background-size: cover;
     background-attachment: fixed;
     margin: 0;
@@ -46,7 +47,13 @@ a {
 a:hover {
     text-decoration: underline;
 }
-
+.room {
+    padding: 20px;
+    margin: 20px;
+    background: white;
+    border: 1px solid #b6b6b6;
+    border-radius: 10px;
+}
 .room-card {
     display: flex;
     flex-direction: row;

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Для DjangoRestFramework
     'django_filters',  # Для фильтров в DjangoRestFramework
     'simple_history',  # Сохранение истории изменения объектов
+    'import_export'  # Экспорт в EXCEL
 ]
 
 REST_FRAMEWORK = {
@@ -121,24 +122,25 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFIES_DIRS = [
-    BASE_DIR / "static"
+
+# Настройки для статических файлов
+STATIC_URL = '/static/'  # URL-префикс для статических файлов
+
+# Директории, где Django будет искать статические файлы
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Указываем путь к вашей директории static
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+# (Опционально) Директория для сбора статических файлов при deploy
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = 'media/'
-
-MEDIA_ROOT = 'static/'
+# Настройки для медиафайлов
+MEDIA_URL = '/media/'  # URL-префикс для медиафайлов
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Путь к директории для хранения медиафайлов
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

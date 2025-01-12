@@ -8,15 +8,15 @@ from .models import Room
 class RoomFilter(django_filters.FilterSet):
     amenities = django_filters.CharFilter(method='filter_amenities', label='Включая удобство (Напр. Wifi)')
     exclude_amenity = django_filters.CharFilter(method='filter_exclude_amenity', label='Исключить удобства')
-    price_range = django_filters.NumericRangeFilter(field_name='price_per_night', label='Диапазон цен')
-    max_occupancy = django_filters.NumberFilter(field_name='max_occupancy', lookup_expr='lte',
-                                                label='Максимально человек')
+    price_min = django_filters.NumberFilter(field_name='price_per_night', lookup_expr='gte', label='Минимальная цена')
+    price_max = django_filters.NumberFilter(field_name='price_per_night', lookup_expr='lte', label='Максимальная цена')
+    max_occupancy = django_filters.NumberFilter(field_name='max_occupancy', lookup_expr='lte', label='Максимально человек')
     room_type = django_filters.CharFilter(field_name='room_type', lookup_expr='icontains', label='Тип комнаты')
     has_image = django_filters.BooleanFilter(method='filter_has_image', label='Наличие изображения')
 
     class Meta:
         model = Room
-        fields = ['amenities', 'price_range', 'max_occupancy', 'room_type', 'has_image']
+        fields = ['amenities', 'price_min', 'price_max', 'max_occupancy', 'room_type', 'has_image']
 
     def filter_amenities(self, queryset, name, value):
         """

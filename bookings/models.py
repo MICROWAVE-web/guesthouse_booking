@@ -43,7 +43,7 @@ class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     check_in = models.DateField()
     check_out = models.DateField()
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Суммарная стоимость")
     booking_name = models.CharField(max_length=255)
 
     history = HistoricalRecords()  # Отслеживание истории
