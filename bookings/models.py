@@ -57,4 +57,4 @@ class Review(models.Model):
     review_date = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return f"Review by {self.guest_name} for {self.room.name}"
+        return f"Обзор от пользователя {self.guest_name} для «{self.room.name}»"

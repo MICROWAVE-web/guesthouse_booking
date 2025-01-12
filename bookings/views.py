@@ -1,22 +1,22 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+import datetime
+
 from django.contrib import messages
-from .models import Room
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from .models import Review, Room, Booking
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .forms import ReviewForm
 from .forms import RoomForm
-from django.contrib.auth.forms import UserCreationForm
-from .forms import BookingForm
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import datetime
+from .models import Review, Room, Booking, Guest
+
 
 def index(request):
     rooms = Room.objects.all()
     return render(request, 'bookings/index.html', {'rooms': rooms})
+
 
 def login_view(request):
     print(1)
@@ -31,6 +31,7 @@ def login_view(request):
             messages.error(request, 'Неверные логин или пароль')
     return redirect('index')
 
+
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -44,10 +45,12 @@ def register_view(request):
             messages.error(request, 'Пользователь с таким логином уже существует')
     return redirect('index')
 
+
 def logout_view(request):
     print(2)
     logout(request)
     return redirect('index')
+
 
 @login_required
 @csrf_exempt
@@ -86,11 +89,13 @@ def book_room(request):
     rooms = Room.objects.all()
     return render(request, 'bookings/book_room.html', {'rooms': rooms})
 
+
 @login_required
 def review_list(request):
     reviews = Review.objects.all()
     rooms = Room.objects.all()
     return render(request, 'bookings/review_list.html', {'reviews': reviews, 'rooms': rooms})
+
 
 @csrf_exempt
 @login_required
@@ -108,11 +113,13 @@ def add_review(request):
         form = ReviewForm()
     return render(request, 'bookings/add_review.html', {'form': form})
 
+
 @login_required
 def review_modal(request):
     form = ReviewForm(initial={'guest_name': request.user.username})
     rooms = Room.objects.all()
     return render(request, 'bookings/review_modal.html', {'form': form, 'rooms': rooms})
+
 
 @csrf_exempt
 @login_required
@@ -122,6 +129,7 @@ def delete_review(request, review_id):
         review.delete()
         messages.success(request, 'Отзыв успешно удален.')
     return redirect('review_list')
+
 
 @login_required
 def add_room(request):
@@ -136,6 +144,7 @@ def add_room(request):
         return render(request, 'bookings/add_room.html', {'form': form})
     else:
         return redirect('index')
+
 
 @login_required
 def edit_room(request, pk):
@@ -152,10 +161,11 @@ def edit_room(request, pk):
     else:
         return redirect('index')
 
+
 def delete_room(request, pk):
     room = get_object_or_404(Room, pk=pk)
     if request.method == 'POST':
         room.delete()
         return redirect('index')  # После удаления перенаправляем на главную страницу или куда нужно
-    
+
     return render(request, 'edit_room.html', {'room': room})
