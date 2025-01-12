@@ -2,10 +2,13 @@
 
 from django.db import models
 from django.utils import timezone
+from simple_history.models import HistoricalRecords
 
 
 class Amenity(models.Model):
     name = models.CharField(max_length=100)
+
+    history = HistoricalRecords()  # Отслеживание истории
 
     def __str__(self):
         return self.name
@@ -20,6 +23,8 @@ class Room(models.Model):
     amenities = models.ManyToManyField('Amenity', blank=True)
     image = models.ImageField(upload_to='images/')
 
+    history = HistoricalRecords()  # Отслеживание истории
+
     def __str__(self):
         return self.name
 
@@ -30,6 +35,8 @@ class Guest(models.Model):
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
 
+    history = HistoricalRecords()  # Отслеживание истории
+
 
 class Booking(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
@@ -38,6 +45,8 @@ class Booking(models.Model):
     check_out = models.DateField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
     booking_name = models.CharField(max_length=255)
+
+    history = HistoricalRecords()  # Отслеживание истории
 
     def __str__(self):
         return f"{self.booking_name} ({self.guest.first_name} {self.guest.last_name})"
@@ -48,6 +57,8 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=2)
     payment_date = models.DateField()
 
+    history = HistoricalRecords()  # Отслеживание истории
+
 
 class Review(models.Model):
     guest_name = models.CharField(max_length=100)
@@ -55,6 +66,8 @@ class Review(models.Model):
     rating = models.IntegerField()
     comment = models.TextField()
     review_date = models.DateField(default=timezone.now)
+
+    history = HistoricalRecords()  # Отслеживание истории
 
     def __str__(self):
         return f"Обзор от пользователя {self.guest_name} для «{self.room.name}»"

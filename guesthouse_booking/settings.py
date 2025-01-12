@@ -38,15 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookings',
     'rest_framework',  # Для DjangoRestFramework
-    'django_filters'  # Для фильтров в DjangoRestFramework
+    'django_filters',  # Для фильтров в DjangoRestFramework
+    'simple_history',  # Сохранение истории изменения объектов
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # Пагинация
-    'PAGE_SIZE': 10,  # Количество элементов на странице
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # Пагинация (Напр. /api/rooms/?page=2&page_size=20)
+    'PAGE_SIZE': 5,  # Количество элементов на странице по-умолчанию
 }
 
 MIDDLEWARE = [
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware'  # для django-simple-history
 ]
 
 ROOT_URLCONF = 'guesthouse_booking.urls'
