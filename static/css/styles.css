@@ -1,0 +1,122 @@
+/* static/css/styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("../images/Фон страници.webp");
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+}
+
+.container {
+    margin-top: 80px; /* Отступ сверху чтобы контент не перекрывался header'ом */
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.room-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.room-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.room-details {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.room-details h5 {
+    margin: 0;
+}
+
+.room-price {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.room-book {
+    margin-left: auto;
+}
+
+.room-book button {
+    background-color: #ff4b5c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal .modal-dialog .modal-content .modal-header .close {
+    outline: none;
+}
+
+.modal .modal-dialog .modal-content .modal-body .form-group input,
+.modal .modal-dialog .modal-content .modal-body .form-group select,
+.modal .modal-dialog .modal-content .modal-body .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal .modal-dialog .modal-content .modal-footer .btn-secondary,
+.modal .modal-dialog .modal-content .modal-footer .btn-link {
+    margin-right: 10px;
+}
+
+.modal .modal-dialog .modal-content .modal-footer .btn-primary {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
