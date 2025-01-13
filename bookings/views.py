@@ -4,10 +4,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from .filters import RoomFilter, ReviewFilter
 from .forms import ReviewForm
 from .forms import RoomForm
 from .models import Review, Room, Booking, Guest
@@ -15,11 +17,20 @@ from .models import Review, Room, Booking, Guest
 
 def index(request):
     rooms = Room.objects.all()
-    return render(request, 'bookings/index.html', {'rooms': rooms})
+    filterset = RoomFilter(request.GET, queryset=rooms)  # Применяем фильтр
+    filtered_queryset = filterset.qs  # Получаем отфильтрованный queryset
+    paginator = Paginator(filtered_queryset, 5)  # Разбиваем на страницы по 5 объектов
+    page_number = request.GET.get('page')  # Получаем номер страницы из GET-запроса
+    rooms = paginator.get_page(page_number)  # Получаем объект страницы
+
+    context = {
+        'rooms': rooms,
+        'filterset': filterset,
+    }
+    return render(request, 'bookings/index.html', context)
 
 
 def login_view(request):
-    print(1)
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -47,7 +58,6 @@ def register_view(request):
 
 
 def logout_view(request):
-    print(2)
     logout(request)
     return redirect('index')
 
@@ -93,8 +103,19 @@ def book_room(request):
 @login_required
 def review_list(request):
     reviews = Review.objects.all()
+    filterset = ReviewFilter(request.GET, queryset=reviews)  # Применяем фильтр
+    filtered_queryset = filterset.qs  # Получаем отфильтрованный queryset
+    paginator = Paginator(filtered_queryset, 5)  # Разбиваем на страницы по 5 объектов
+    page_number = request.GET.get('page')  # Получаем номер страницы из GET-запроса
+    reviews = paginator.get_page(page_number)  # Получаем объект страницы
     rooms = Room.objects.all()
-    return render(request, 'bookings/review_list.html', {'reviews': reviews, 'rooms': rooms})
+
+    context = {
+        'reviews': reviews,
+        'rooms': rooms,
+        'filterset': filterset
+    }
+    return render(request, 'bookings/review_list.html', context)
 
 
 @csrf_exempt

@@ -1,96 +1,157 @@
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Guesthouse Booking</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <header class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Гостевой дом Приветливый</a>
-        <div class="ml-auto">
-            {% if user.is_authenticated %}
-                <span class="navbar-text">Привет, {{ user.username }}!</span>
-                <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary ml-2">Выйти</button>
-                    <a href="{% url 'review_list' %}" class="btn btn-primary">Отзывы</a>
-                </form>
-            {% else %}
-                <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Войти</button>
-            {% endif %}
-        </div>
-    </header>
-    
-
-    <div class="container">
-        <h1 class="mt-4">Доступные номера</h1>
-        {% if user.is_superuser %}
-            <a href="{% url 'add_room' %}" class="btn btn-success mb-3">Добавить номер</a>
+<header class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Гостевой дом Приветливый</a>
+    <div class="ml-auto">
+        {% if user.is_authenticated %}
+            <span class="navbar-text">Привет, {{ user.username }}!</span>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary ml-2">Выйти</button>
+                <a href="{% url 'review_list' %}" class="btn btn-primary">Отзывы</a>
+            </form>
+        {% else %}
+            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Войти</button>
         {% endif %}
-        <div class="rooms-list">
-            {% for room in rooms %}
-                <div class="room">
-                    <h2>{{ room.name }}</h2>
-                    <img src="{{ room.image.url }}" alt="Room Image" class="room-image">
-                    <p>Тип: {{ room.room_type }}</p>
-                    <p>Цена за ночь: {{ room.price_per_night }}</p>
-                    <p>Кол-во проживающих: {{ room.max_occupancy }}</p>
-                    <details>
-                        <summary>Удобства</summary>
-                        <ul>
-                            {% for amenity in room.amenities.all %}
-                                <li>{{ amenity.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    </details>
-                    {% if user.is_superuser %}
-                        <a href="{% url 'edit_room' room.pk %}" class="btn btn-warning">Редактировать</a>
-                    {% endif %}
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#bookingModal">Забронировать</button>
-                </div>
-            {% endfor %}
-        </div>
+    </div>
+</header>
+
+
+<div class="container">
+    <h1 class="mt-4">Доступные номера</h1>
+
+
+    <!-- Форма фильтрации -->
+    <div class="room">
+        <h2>Фильтр</h2>
+        <form method="get" action="/">
+            {{ filterset.form|crispy }}
+            <button type="submit" class="btn btn-primary">Фильтровать</button>
+        </form>
     </div>
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Войти</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="username">Логин</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Пароль</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">Регистрация</button>
-                </div>
+    {% if user.is_superuser %}
+        <a href="{% url 'add_room' %}" class="btn btn-success mb-3">Добавить номер</a>
+    {% endif %}
+    <div class="rooms-list">
+        {% for room in rooms %}
+            <div class="room">
+                <h2>{{ room.name }}</h2>
+                <img src="{{ room.image.url }}" alt="Room Image" class="room-image">
+                <p>Тип: {{ room.room_type }}</p>
+                <p>Цена за ночь: {{ room.price_per_night }}</p>
+                <p>Кол-во проживающих: {{ room.max_occupancy }}</p>
+                <details>
+                    <summary>Удобства</summary>
+                    <ul>
+                        {% for amenity in room.amenities.all %}
+                            <li>{{ amenity.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+                {% if user.is_superuser %}
+                    <a href="{% url 'edit_room' room.pk %}" class="btn btn-warning">Редактировать</a>
+                {% endif %}
+                <button class="btn btn-primary" data-toggle="modal" data-target="#bookingModal">Забронировать</button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Пагинация -->
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if rooms.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ rooms.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        {% for num in rooms.paginator.page_range %}
+            {% if rooms.number == num %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if rooms.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ rooms.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ rooms.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Войти</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#registerModal"
+                        data-dismiss="modal">Регистрация
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Register Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -124,69 +185,73 @@
     </div>
 </div>
 
-    <!-- Review Modal -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reviewModalLabel">Оставить отзыв</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Оставить отзыв</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="container mt-5">
+                        <h1>Оставить отзыв</h1>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                        </form>
+                    </div>
+                </form>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="guest_name">Имя гостя</label>
+                    <input type="text" class="form-control" id="guest_name" name="guest_name"
+                           value="{{ user.username }}" readonly>
                 </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="container mt-5">
-                            <h1>Оставить отзыв</h1>
-                            <form method="post">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                            </form>
-                        </div>
-                    </form>
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="guest_name">Имя гостя</label>
-                        <input type="text" class="form-control" id="guest_name" name="guest_name" value="{{ user.username }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="room">Комната заселения</label>
-                        <select class="form-control" id="room" name="room" required>
-                            <option value="">Выберите комнату</option>
-                            {% for room in rooms %}
-                                <option value="{{ room.id }}">{{ room.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="rating">Рейтинг</label>
-                        <select class="form-control" id="rating" name="rating" required>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="comment">Комментарий</label>
-                        <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="review_date">Дата</label>
-                        <input type="text" class="form-control" id="review_date" name="review_date" value="{% now "Y-m-d" %}" readonly>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                <div class="form-group">
+                    <label for="room">Комната заселения</label>
+                    <select class="form-control" id="room" name="room" required>
+                        <option value="">Выберите комнату</option>
+                        {% for room in rooms %}
+                            <option value="{{ room.id }}">{{ room.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <div class="form-group">
+                    <label for="rating">Рейтинг</label>
+                    <select class="form-control" id="rating" name="rating" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label for="comment">Комментарий</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="review_date">Дата</label>
+                    <input type="text" class="form-control" id="review_date" name="review_date"
+                           value="{% now "Y-m-d" %}" readonly>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
+</div>
 
 <!-- Booking Modal -->
-<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -235,22 +300,22 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#bookingForm').on('submit', function(e) {
+    $(document).ready(function () {
+        $('#bookingForm').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
                 type: 'POST',
                 url: "{% url 'book_room' %}",
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     $('#bookingMessage').show();
                     $('#bookingForm')[0].reset();
-                    setTimeout(function() {
+                    setTimeout(function () {
                         $('#bookingModal').modal('hide');
                         $('#bookingMessage').hide();
                     }, 3000);
                 },
-                error: function(response) {
+                error: function (response) {
                     alert('Ошибка бронирования. Попробуйте снова.');
                 }
             });

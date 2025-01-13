@@ -7,6 +7,7 @@ body {
     background-attachment: fixed;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
 .header {
@@ -127,3 +128,7 @@ a:hover {
     cursor: pointer;
 }
 
+.pagination {
+    justify-content: center;
+    padding-bottom: 40px;
+}

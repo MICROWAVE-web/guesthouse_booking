@@ -40,8 +40,14 @@ INSTALLED_APPS = [
     'rest_framework',  # Для DjangoRestFramework
     'django_filters',  # Для фильтров в DjangoRestFramework
     'simple_history',  # Сохранение истории изменения объектов
-    'import_export'  # Экспорт в EXCEL
+    'import_export',  # Экспорт в EXCEL
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (

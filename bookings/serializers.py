@@ -79,8 +79,6 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    room = RoomSerializer(read_only=True)
-
     class Meta:
         model = Review
         fields = ['id', 'guest_name', 'room', 'rating', 'comment', 'review_date']
