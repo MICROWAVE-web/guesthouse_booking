@@ -81,7 +81,7 @@ class RoomViewSet(viewsets.ModelViewSet):
             start_date, end_date = date_range.split(',')
             query &= Q(check_in__gte=start_date) & Q(check_out__lte=end_date)
         else:
-            return Response({"message": f"Not enough conditions."}, status=200)
+            return Response({"message": "Not enough conditions."}, status=200)
 
         # Проверка на то что комната существует
         if not Booking.objects.filter(room_exist_query).exists():
@@ -89,16 +89,17 @@ class RoomViewSet(viewsets.ModelViewSet):
 
         if Booking.objects.filter(query).exists():
             # Заказы на эту комнату в этот промежуток времени уже есть.
-            return Response({"message": f"This room is already booked."}, status=200)
+            return Response({"message": "This room is already booked."}, status=200)
         else:
             # Заказы на эту комнату в этот промежуток времени нет, комнату можно заказать.
-            return Response({"message": f"This room is ready to book."}, status=200)
+            return Response({"message": "This room is ready to book."}, status=200)
 
     @action(methods=['GET'], detail=False)
     def filter_rooms(self, request):
         """
         Фильтрация комнат по различным параметрам.
-        Пример: /api/rooms/filter_rooms/?amenities=удобство&price_min=50&price_max=500&max_occupancy=1&room_type=Suite&has_image=True
+        Пример: /api/rooms/filter_rooms/?amenities=удобство&price_min=50&price_max=500&max_occupancy=1
+        &room_type=Suite&has_image=True
         """
         queryset = self.get_queryset()
         query = Q()
@@ -243,7 +244,8 @@ class BookingViewSet(viewsets.ModelViewSet):
     def filter_bookings(self, request):
         """
         Фильтрация бронирований по различным параметрам.
-        Пример: /api/bookings/filter_bookings/?check_in_after=2024-01-01&check_out_before=2025-02-10&min_total_price=70&max_total_price=500&is_paid=False
+        Пример: /api/bookings/filter_bookings/?check_in_after=2024-01-01&check_out_before=2025-02-10
+        &min_total_price=70&max_total_price=500&is_paid=False
         """
         queryset = self.get_queryset()
         query = Q()

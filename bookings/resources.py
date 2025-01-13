@@ -35,7 +35,8 @@ class BookingResource(ModelResource):
         additional_text = ''
         if booking.guest.is_blocked:
             additional_text = 'ЗАБЛОКИРОВАН'
-        return f"{booking.guest.first_name} {booking.guest.last_name} {booking.guest.phone_number} {additional_text}".strip()
+        return (f"{booking.guest.first_name} {booking.guest.last_name} "
+                f"{booking.guest.phone_number} {additional_text}").strip()
 
     def dehydrate_total_price(self, booking):
         """
