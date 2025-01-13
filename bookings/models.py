@@ -34,8 +34,11 @@ class Guest(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
-
+    is_blocked = models.BooleanField(default=False)
     history = HistoricalRecords()  # Отслеживание истории
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Booking(models.Model):
@@ -45,6 +48,7 @@ class Booking(models.Model):
     check_out = models.DateField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Суммарная стоимость")
     booking_name = models.CharField(max_length=255)
+    is_paid = models.BooleanField(default=False)
 
     history = HistoricalRecords()  # Отслеживание истории
 

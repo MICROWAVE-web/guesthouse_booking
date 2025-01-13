@@ -1,7 +1,9 @@
 from django import forms
-from .models import Review
+
 from .models import Booking
-from .models import Room, Amenity
+from .models import Review
+from .models import Room
+
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -15,9 +17,11 @@ class ReviewForm(forms.ModelForm):
 class BookingForm(forms.ModelForm):
     room_id = forms.IntegerField(widget=forms.HiddenInput())
     room_name = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
     class Meta:
         model = Booking
-        fields = ['guest', 'room_id', 'room_name', 'check_in', 'check_out', 'total_price']
+        fields = ['guest', 'room_id', 'room_name', 'check_in', 'check_out', 'total_price', 'is_paid']
+
 
 class RoomForm(forms.ModelForm):
     class Meta:

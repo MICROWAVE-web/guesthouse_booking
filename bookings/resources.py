@@ -13,8 +13,8 @@ class BookingResource(ModelResource):
 
     class Meta:
         model = Booking
-        fields = ('id', 'guest_name', 'room__name', 'check_in', 'check_out', 'total_price')
-        export_order = ('id', 'guest_name', 'room__name', 'check_in', 'check_out', 'total_price')
+        fields = ('id', 'guest_name', 'room__name', 'check_in', 'check_out', 'total_price', 'is_paid')
+        export_order = ('id', 'guest_name', 'room__name', 'check_in', 'check_out', 'total_price', 'is_paid')
 
     def get_export_headers(self, selected_fields):
         """
@@ -32,7 +32,10 @@ class BookingResource(ModelResource):
         Кастомизация поля guest_name.
         Возвращает полное имя гостя.
         """
-        return f"{booking.guest.first_name} {booking.guest.last_name} {booking.guest.phone_number}"
+        additional_text = ''
+        if booking.guest.is_blocked:
+            additional_text = 'ЗАБЛОКИРОВАН'
+        return f"{booking.guest.first_name} {booking.guest.last_name} {booking.guest.phone_number} {additional_text}".strip()
 
     def dehydrate_total_price(self, booking):
         """
@@ -40,3 +43,11 @@ class BookingResource(ModelResource):
         Добавляет символ валюты.
         """
         return f"₽{booking.total_price}"
+
+    def dehydrate_is_paid(self, booking):
+        """
+        Кастомизация поля is_paid.
+        """
+        if booking.is_paid:
+            return "Оплачено"
+        return "Не оплачено"

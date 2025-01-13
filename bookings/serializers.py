@@ -13,6 +13,7 @@ class AmenitySerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     amenities = AmenitySerializer(many=True, read_only=True)
+    name = serializers.CharField(required=True, help_text="Название комнаты")
 
     class Meta:
         model = Room
@@ -22,7 +23,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class GuestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guest
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'is_blocked']
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ['id', 'guest', 'room', 'check_in', 'check_out', 'total_price', 'booking_name']
+        fields = ['id', 'guest', 'room', 'check_in', 'check_out', 'total_price', 'booking_name', 'is_paid']
 
 
 class PaymentSerializer(serializers.ModelSerializer):
